@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 /*
  * @lc app=leetcode id=49 lang=golang
@@ -47,7 +50,54 @@ import "fmt"
  */
 
 // @lc code=start
+
+// sort from stack overflow https://stackoverflow.com/questions/22688651/golang-how-to-sort-string-or-byte
+type sortRunes []rune
+
+func (s sortRunes) Less(i, j int) bool {
+	return s[i] < s[j]
+}
+
+func (s sortRunes) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s sortRunes) Len() int {
+	return len(s)
+}
+
+func SortString(s string) string {
+	r := []rune(s)
+	sort.Sort(sortRunes(r))
+	return string(r)
+}
+
 func groupAnagrams(strs []string) [][]string {
+	cache := map[string][]string{}
+	// iterate over 'strs' only once
+	for _, str := range strs {
+		// the sorted string is identical for all anagrams
+		// we use it as index for our map which points to a slice with
+		// where we append the 'original' strings
+		sortedStr := SortString(str)
+		if cache[sortedStr] == nil {
+			cache[sortedStr] = []string{str}
+		} else {
+			cache[sortedStr] = append(cache[sortedStr], str)
+		}
+	}
+	result := [][]string{}
+	// iterate over the amount of different anagrams
+	for _, anagrams := range cache {
+		result = append(result, anagrams)
+	}
+	return result
+}
+
+// @lc code=end
+
+// my initial solution with multiple (2-3) iterations over all strings
+func old_groupAnagrams(strs []string) [][]string {
 	// generate lettercounts per string for letter count comparison
 	letterCounts := []map[byte]int{}
 	for _, str := range strs {
@@ -92,9 +142,6 @@ func groupAnagrams(strs []string) [][]string {
 	}
 	return result
 }
-
-// @lc code=end
-
 func main() {
 	strs := []string{"eat", "tea", "tan", "ate", "nat", "bat"}
 	res := groupAnagrams(strs)
