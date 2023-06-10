@@ -66,6 +66,44 @@ import "sort"
 
 // @lc code=start
 func threeSum(nums []int) [][]int {
+	sort.Ints(nums)
+	result := [][]int{}
+	numsLen := len(nums)
+	for i := 0; i < numsLen-2; i++ {
+		if i > 0 && nums[i] == nums[i-1] {
+			continue
+		}
+		// the key to solve this problem in time was to reduce the
+		// problem space from left AND right (my initial approach only went left-to-right)
+		right := numsLen - 1
+		left := i + 1
+		for left < right {
+			sum := nums[i] + nums[left] + nums[right]
+			if sum < 0 {
+				left++
+			} else if sum > 0 {
+				right--
+			} else {
+				result = append(result, []int{nums[i], nums[left], nums[right]})
+				//skip duplicates on both ends
+				for left+1 < right && nums[left] == nums[left+1] {
+					left++
+				}
+				for left < right-1 && nums[right] == nums[right-1] {
+					right--
+				}
+				// go to next check
+				left++
+				right--
+			}
+		}
+	}
+	return result
+}
+
+// @lc code=end
+
+func tooSlow_threeSum(nums []int) [][]int {
 	// TODO: too slow, times out
 	sort.Ints(nums)
 	result := [][]int{}
@@ -96,5 +134,3 @@ func threeSum(nums []int) [][]int {
 	}
 	return result
 }
-
-// @lc code=end
