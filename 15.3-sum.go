@@ -1,5 +1,7 @@
 package main
 
+import "sort"
+
 /*
  * @lc app=leetcode id=15 lang=golang
  *
@@ -64,7 +66,35 @@ package main
 
 // @lc code=start
 func threeSum(nums []int) [][]int {
-
+	// TODO: too slow, times out
+	sort.Ints(nums)
+	result := [][]int{}
+	cache := map[int]map[int]int{}
+	l := len(nums)
+	for i := 0; i < l-2; i++ {
+		if _, ok := cache[nums[i]]; ok {
+			continue
+		}
+		for j := i + 1; j < l-1; j++ {
+			if _, ok := cache[nums[i]][nums[j]]; ok {
+				continue
+			}
+			for k := j + 1; k < l; k++ {
+				if nums[i]+nums[j]+nums[k] == 0 {
+					if cache[nums[i]] == nil {
+						cache[nums[i]] = map[int]int{}
+					}
+					cache[nums[i]][nums[j]] = nums[k]
+				}
+			}
+		}
+	}
+	for k1, v1 := range cache {
+		for k2, v2 := range v1 {
+			result = append(result, []int{k1, k2, v2})
+		}
+	}
+	return result
 }
 
 // @lc code=end
