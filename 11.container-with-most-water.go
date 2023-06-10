@@ -57,6 +57,12 @@ package main
 
 // @lc code=start
 func maxArea(heights []int) int {
+	// TODO: the fast solution does the same as in problem 15.3-sum
+	// need to reduce problem space from left and right simultaneously
+}
+
+// @lc code=end
+func slow_maxArea(heights []int) int {
 	maxArea := 0
 	highestLeft := 0
 	for i := 0; i < len(heights)-1; i++ {
@@ -86,5 +92,3 @@ func maxArea(heights []int) int {
 	}
 	return maxArea
 }
-
-// @lc code=end
